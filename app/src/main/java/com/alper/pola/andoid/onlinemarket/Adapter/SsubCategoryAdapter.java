@@ -30,9 +30,6 @@ public class SsubCategoryAdapter extends RecyclerView.Adapter<SsubCategoryAdapte
 
     }
 
-    public void addItems(List<SubCategory_> items) {
-        this.categories.addAll(items);
-    }
 
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -48,10 +45,8 @@ public class SsubCategoryAdapter extends RecyclerView.Adapter<SsubCategoryAdapte
     public void onBindViewHolder(final ContactViewHolder holder, int position) {
 
 
-        final SubCategory_ category = categories.get(position);
-        holder.img.setText(category.getName());
-
-
+        final SubCategory_ scategory = categories.get(position);
+        holder.categoryName.setText(scategory.getName());
 
 
     }
@@ -63,12 +58,12 @@ public class SsubCategoryAdapter extends RecyclerView.Adapter<SsubCategoryAdapte
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        protected TextView img;
+        protected TextView categoryName;
 
 
         public ContactViewHolder(View v) {
             super(v);
-            img = v.findViewById(R.id.wallpaper);
+            categoryName = v.findViewById(R.id.wallpaper);
 
         }
     }

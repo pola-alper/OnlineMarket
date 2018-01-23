@@ -10,9 +10,6 @@ public class Datum implements Serializable {
     @SerializedName("text")
     @Expose
     private String text;
-    @SerializedName("action")
-    @Expose
-    private String action;
 
     public String getText() {
         return text;
@@ -22,12 +19,6 @@ public class Datum implements Serializable {
         this.text = text;
     }
 
-    public String getAction() {
-        return action;
-    }
 
-    public void setAction(String action) {
-        this.action = action;
-    }
 
 }

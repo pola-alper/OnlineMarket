@@ -30,9 +30,6 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
 
     }
 
-    public void addItems(List<SubCategory> items) {
-        this.categories.addAll(items);
-    }
 
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -48,12 +45,9 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
     public void onBindViewHolder(final ContactViewHolder holder, int position) {
 
 
-        final SubCategory category = categories.get(position);
-        holder.img.setText(category.getName());
+        final SubCategory sscategory = categories.get(position);
+        holder.categoryName.setText(sscategory.getName());
 
-        // Glide.with(context).load(category.getImageUrl()).into(holder.img);
-
-        Log.d("internt spped low", "onBindViewHolder: low ");
 
 
     }
@@ -65,12 +59,12 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        protected TextView img;
+        protected TextView categoryName;
 
 
         public ContactViewHolder(View v) {
             super(v);
-            img = v.findViewById(R.id.wallpaper);
+            categoryName = v.findViewById(R.id.wallpaper);
 
         }
     }

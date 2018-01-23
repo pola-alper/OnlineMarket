@@ -16,7 +16,7 @@ public interface RequestInterface {
 
     @GET()
     Observable<ArrayList<Example2>> registerelse(
-@Url String url
+            @Url String url
 
     );
 }

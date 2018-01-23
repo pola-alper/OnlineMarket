@@ -1,5 +1,7 @@
 package com.alper.pola.andoid.onlinemarket.Model.Model1;
 
+import android.media.Image;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,9 +22,7 @@ public class Data implements Serializable {
     @SerializedName("min_img_width")
     @Expose
     private String minImgWidth;
-    @SerializedName("images")
-    @Expose
-    private List<Image> images;
+
     @SerializedName("cart")
     @Expose
     private List<Object> cart;
@@ -92,13 +92,6 @@ public class Data implements Serializable {
         this.minImgWidth = minImgWidth;
     }
 
-    public List<Image> getImages() {
-        return images;
-    }
-
-    public void setImages(List<Image> images) {
-        this.images = images;
-    }
 
     public List<Object> getCart() {
         return cart;
@@ -203,7 +196,6 @@ public class Data implements Serializable {
                 ", title='" + title + '\'' +
                 ", categories=" + categories +
                 ", minImgWidth='" + minImgWidth + '\'' +
-                ", images=" + images +
                 ", cart=" + cart +
                 ", currency='" + currency + '\'' +
                 ", youPay=" + youPay +

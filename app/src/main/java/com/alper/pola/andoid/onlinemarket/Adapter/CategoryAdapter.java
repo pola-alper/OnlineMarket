@@ -2,7 +2,6 @@ package com.alper.pola.andoid.onlinemarket.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +19,16 @@ import java.util.List;
  */
 
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ContactViewHolder> {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ContactViewHolder> {
     Context context;
     private List<Category> categories = new ArrayList<>();
 
-    public ImageAdapter(ArrayList<Category> categories, Context context) {
+    public CategoryAdapter(ArrayList<Category> categories, Context context) {
         this.context = context;
         this.categories = categories;
 
     }
 
-    public void addItems(List<Category> items) {
-        this.categories.addAll(items);
-    }
 
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -49,11 +45,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ContactViewH
 
 
         final Category category = categories.get(position);
-   holder.img.setText(category.getName());
-
-       // Glide.with(context).load(category.getImageUrl()).into(holder.img);
-
-        Log.d("internt spped low", "onBindViewHolder: low ");
+        holder.categoryName.setText(category.getName());
 
 
     }
@@ -65,12 +57,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ContactViewH
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        protected TextView img;
+        protected TextView categoryName;
 
 
         public ContactViewHolder(View v) {
             super(v);
-            img = v.findViewById(R.id.wallpaper);
+            categoryName = v.findViewById(R.id.wallpaper);
 
         }
     }

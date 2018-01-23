@@ -11,9 +11,7 @@ public class Brand {
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("url")
-    @Expose
-    private String url;
+
 
     public String getId() {
         return id;
@@ -31,12 +29,6 @@ public class Brand {
         this.name = name;
     }
 
-    public String getUrl() {
-        return url;
-    }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
 }

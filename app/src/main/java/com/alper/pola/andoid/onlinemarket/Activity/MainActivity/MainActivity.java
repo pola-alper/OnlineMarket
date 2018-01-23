@@ -1,4 +1,4 @@
-package com.alper.pola.andoid.onlinemarket.Activity;
+package com.alper.pola.andoid.onlinemarket.Activity.MainActivity;
 
 import android.content.Intent;
 import android.os.Build;
@@ -17,17 +17,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
-import com.alper.pola.andoid.onlinemarket.Adapter.ImageAdapter;
+import com.alper.pola.andoid.onlinemarket.Activity.LoginActivity.LoginActivity;
+import com.alper.pola.andoid.onlinemarket.Activity.Sub_Category.Sub_Category;
+import com.alper.pola.andoid.onlinemarket.Adapter.CategoryAdapter;
 import com.alper.pola.andoid.onlinemarket.Model.Model1.Category;
 import com.alper.pola.andoid.onlinemarket.Model.Model1.Example;
-import com.alper.pola.andoid.onlinemarket.Model.Model2.Product;
 import com.alper.pola.andoid.onlinemarket.Model.Model3.User;
-import com.alper.pola.andoid.onlinemarket.Model.Model3.UserUpdate;
 import com.alper.pola.andoid.onlinemarket.R;
 import com.alper.pola.andoid.onlinemarket.Service.RequestInterface;
 import com.alper.pola.andoid.onlinemarket.Util.RecyclerItemClickListener;
 import com.bumptech.glide.Glide;
-import com.facebook.login.Login;
 import com.facebook.login.LoginManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,20 +52,27 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String baseUrl = "https://www.zopnow.com/";
     public static String cartCount;
-    ArrayList<Category> categories;
     @BindView(R.id.recyclerview)
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.profile_image)
     CircleImageView circleImageView;
-    private CompositeDisposable mcompositeDisposable;
-    private ImageAdapter imageAdapter;
+    private String baseUrl = "https://www.zopnow.com/";
+    private ArrayList<Category> categories;
+    private CompositeDisposable mCompositeDisposable;
+    private CategoryAdapter categoryAdapter;
     private String facebookId;
     private String facebookEmail;
     private String facebookName;
+    private Intent intent;
+    private DatabaseReference ref;
+    private DatabaseReference myRef;
+    private DatabaseReference refget;
+    private DatabaseReference myRefget;
+    private Category category;
+    private GridLayoutManager gridLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,18 +80,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setupToolBar(toolbar);
-        mcompositeDisposable = new CompositeDisposable();
-        Intent intent = getIntent();
+        mCompositeDisposable = new CompositeDisposable();
+        intent = getIntent();
         facebookId = intent.getStringExtra("facebookid");
         facebookName = intent.getStringExtra("facebookname");
-
         facebookEmail = intent.getStringExtra("facebookemail");
         Glide.with(this).load("https://graph.facebook.com/" + facebookId + "/picture?type=small").into(circleImageView);
 
         setCardList();
         loadJSON();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference myRef = ref.child("message").child("users");
+        ref = FirebaseDatabase.getInstance().getReference();
+        myRef = ref.child("message").child("users");
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -96,11 +101,10 @@ public class MainActivity extends AppCompatActivity {
                     users.put(facebookId, new User(facebookEmail, facebookName));
                     myRef.setValue(users);
                 } else {
-                    DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
+                    refget = FirebaseDatabase.getInstance().getReference();
+                    myRefget = refget.child("message").child("users").child(facebookId).child("CartCount");
 
-                    DatabaseReference myRef1 = ref1.child("message").child("users").child(facebookId).child("CartCount");
-
-                    myRef1.addValueEventListener(new ValueEventListener() {
+                    myRefget.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String Cartcount = dataSnapshot.getValue(String.class);
@@ -144,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build().create(RequestInterface.class);
 
-        mcompositeDisposable.add(requestInterface.register()
+        mCompositeDisposable.add(requestInterface.register()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse, this::handleError));
@@ -156,11 +160,11 @@ public class MainActivity extends AppCompatActivity {
         categories = (ArrayList<Category>) example.get(1).getDataList().get(0).getCategories();
         Log.d("categoreis", categories.toString());
 
-        imageAdapter = new ImageAdapter(categories, this);
-        recyclerView.setAdapter(imageAdapter);
+        categoryAdapter = new CategoryAdapter(categories, this);
+        recyclerView.setAdapter(categoryAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(MainActivity.this, (view, position) -> {
-            Category category = categories.get(position);
-            Intent intent = new Intent(MainActivity.this, Sub_Category.class);
+            category = categories.get(position);
+            intent = new Intent(MainActivity.this, Sub_Category.class);
             intent.putExtra("subcategory", category);
             intent.putExtra("facebookid", facebookId);
 
@@ -178,12 +182,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mcompositeDisposable.clear();
+        mCompositeDisposable.clear();
     }
 
     public void setCardList() {
         recyclerView.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+        gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
     }
 
@@ -230,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.signout:
                     LoginManager loginManager = LoginManager.getInstance();
                     loginManager.logOut();
-                    Intent intent = new Intent(this,LoginActivity.class);
+                    Intent intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                     return true;
@@ -239,12 +243,11 @@ public class MainActivity extends AppCompatActivity {
         });
         popupMenu.show();
     }
+
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         LoginManager loginManager = LoginManager.getInstance();
         loginManager.logOut();
-        // code here to show dialog
-        super.onBackPressed();  // optional depending on your needs
+        super.onBackPressed();
     }
 }

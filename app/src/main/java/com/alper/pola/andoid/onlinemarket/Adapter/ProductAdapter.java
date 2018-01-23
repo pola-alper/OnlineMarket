@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactViewHolder> {
     Context context;
-    private int quantity = 0;
+    private int quantity = 1;
     private int cartcount;
     private String facebookid;
     private List<Product> products = new ArrayList<>();

@@ -1,4 +1,4 @@
-package com.alper.pola.andoid.onlinemarket.Activity;
+package com.alper.pola.andoid.onlinemarket.Activity.ProductActivity;
 
 import android.content.Intent;
 import android.os.Build;
@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,7 +34,6 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Observable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,19 +45,27 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductActivity extends AppCompatActivity {
-    private static final String baseurl = "https://www.zopnow.com/";
+    private static final String baseUrl = "https://www.zopnow.com/";
     public static String cartCount;
-    @BindView(R.id.recyclerview)
-    RecyclerView recyclerView;
     int postion = 1;
+    @BindView(R.id.recyclerview)
+ RecyclerView recyclerView;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+ Toolbar toolbar;
     @BindView(R.id.profile_image)
-    CircleImageView circleImageView;
+
+ CircleImageView circleImageView;
     private SubCategory_ subCategory_;
     private CompositeDisposable mCompositeDisposable;
     private String url;
     private String facebookId;
+    private Intent intent;
+    private DatabaseReference ref;
+    private DatabaseReference myRef;
+    private ArrayList<Product> products;
+    private ProductAdapter productAdapter;
+    private GridLayoutManager gridLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +74,7 @@ public class ProductActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setCardList();
-        Intent intent = getIntent();
+        intent = getIntent();
         facebookId = intent.getStringExtra("facebookid");
 
         subCategory_ = (SubCategory_) intent.getSerializableExtra("products");
@@ -76,8 +82,8 @@ public class ProductActivity extends AppCompatActivity {
         mCompositeDisposable = new CompositeDisposable();
         Log.d("url", url);
         loadJSON();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference myRef = ref.child("message").child("users").child(facebookId).child("CartCount");
+        ref = FirebaseDatabase.getInstance().getReference();
+        myRef = ref.child("message").child("users").child(facebookId).child("CartCount");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -105,7 +111,7 @@ public class ProductActivity extends AppCompatActivity {
                 .registerTypeAdapter(Example2.class, new Example2.LocationsDeserializer())
                 .create();
         RequestInterface requestInterface = new Retrofit.Builder()
-                .baseUrl(baseurl)
+                .baseUrl(baseUrl)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build().create(RequestInterface.class);
@@ -133,12 +139,12 @@ public class ProductActivity extends AppCompatActivity {
         if (example.get(postion).getDataList().get(0).getProducts() == null) {
             postion = 2;
         }
-        ArrayList<Product> products = (ArrayList<Product>) example.get(postion).getDataList().get(0).getProducts();
+        products = (ArrayList<Product>) example.get(postion).getDataList().get(0).getProducts();
 
         Log.d("productsize", String.valueOf(example.get(postion).getDataList().get(0).getProducts().size()));
         Log.d("products", products.toString());
 
-        ProductAdapter productAdapter = new ProductAdapter(products, this, facebookId);
+        productAdapter = new ProductAdapter(products, this, facebookId);
         recyclerView.setAdapter(productAdapter);
 
 
@@ -147,7 +153,7 @@ public class ProductActivity extends AppCompatActivity {
 
     public void setCardList() {
         recyclerView.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
     }
 
@@ -183,8 +189,6 @@ public class ProductActivity extends AppCompatActivity {
         toolbar.setSubtitle("");
 
     }
-
-
 
 
 }

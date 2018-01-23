@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
-    tools:context="com.alper.pola.andoid.onlinemarket.Activity.LoginActivity">
+    tools:context="com.alper.pola.andoid.onlinemarket.Activity.LoginActivity.LoginActivity">
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
