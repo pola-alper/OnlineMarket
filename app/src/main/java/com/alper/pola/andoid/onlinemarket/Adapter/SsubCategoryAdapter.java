@@ -51,9 +51,7 @@ public class SsubCategoryAdapter extends RecyclerView.Adapter<SsubCategoryAdapte
         final SubCategory_ category = categories.get(position);
         holder.img.setText(category.getName());
 
-        // Glide.with(context).load(category.getImageUrl()).into(holder.img);
 
-        Log.d("internt spped low", "onBindViewHolder: low ");
 
 
     }

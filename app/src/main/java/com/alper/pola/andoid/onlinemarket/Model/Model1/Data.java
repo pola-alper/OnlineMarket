@@ -1,8 +1,8 @@
-
 package com.alper.pola.andoid.onlinemarket.Model.Model1;
 
 import java.io.Serializable;
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -16,7 +16,7 @@ public class Data implements Serializable {
     private String title;
     @SerializedName("categories")
     @Expose
-    private List<Category> categories ;
+    private List<Category> categories;
     @SerializedName("min_img_width")
     @Expose
     private String minImgWidth;
@@ -25,7 +25,7 @@ public class Data implements Serializable {
     private List<Image> images;
     @SerializedName("cart")
     @Expose
-    private List<Object> cart ;
+    private List<Object> cart;
     @SerializedName("currency")
     @Expose
     private String currency;
@@ -46,16 +46,16 @@ public class Data implements Serializable {
     private Boolean userLoggedIn;
     @SerializedName("changes")
     @Expose
-    private List<Object> changes  ;
+    private List<Object> changes;
     @SerializedName("offers")
     @Expose
-    private List<Object> offers ;
+    private List<Object> offers;
     @SerializedName("variant_offers")
     @Expose
-    private List<Object> variantOffers ;
+    private List<Object> variantOffers;
     @SerializedName("potential_offers")
     @Expose
-    private List<Object> potentialOffers ;
+    private List<Object> potentialOffers;
     @SerializedName("hash")
     @Expose
     private String hash;

@@ -1,28 +1,45 @@
 package com.alper.pola.andoid.onlinemarket.Activity;
 
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.Adapter;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.alper.pola.andoid.onlinemarket.Adapter.ProductAdapter;
 import com.alper.pola.andoid.onlinemarket.Model.Model2.Example2;
 import com.alper.pola.andoid.onlinemarket.Model.Model1.SubCategory_;
 import com.alper.pola.andoid.onlinemarket.Model.Model2.Product;
-import com.alper.pola.andoid.onlinemarket.Model.Model2.Variant;
 import com.alper.pola.andoid.onlinemarket.R;
 import com.alper.pola.andoid.onlinemarket.Service.RequestInterface;
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Observable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -31,24 +48,55 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductActivity extends AppCompatActivity {
     private static final String baseurl = "https://www.zopnow.com/";
-    private SubCategory_ subCategory_;
-    private CompositeDisposable mcompositeDisposable;
-    private String url;
+    public static String cartCount;
     @BindView(R.id.recyclerview)
     RecyclerView recyclerView;
-int postion = 1;
+    int postion = 1;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.profile_image)
+    CircleImageView circleImageView;
+    private SubCategory_ subCategory_;
+    private CompositeDisposable mCompositeDisposable;
+    private String url;
+    private String facebookId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
         ButterKnife.bind(this);
+
         setCardList();
         Intent intent = getIntent();
+        facebookId = intent.getStringExtra("facebookid");
+
         subCategory_ = (SubCategory_) intent.getSerializableExtra("products");
         url = subCategory_.getUrl() + ".json";
-        mcompositeDisposable = new CompositeDisposable();
+        mCompositeDisposable = new CompositeDisposable();
         Log.d("url", url);
         loadJSON();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference myRef = ref.child("message").child("users").child(facebookId).child("CartCount");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String Cartcount = dataSnapshot.getValue(String.class);
+                if (Cartcount != null) {
+                    cartCount = Cartcount;
+                    invalidateOptionsMenu();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        setupToolBar(toolbar);
+
+        Glide.with(this).load("https://graph.facebook.com/" + facebookId + "/picture?type=small").into(circleImageView);
 
     }
 
@@ -62,7 +110,7 @@ int postion = 1;
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build().create(RequestInterface.class);
 
-        mcompositeDisposable.add(requestInterface.registerelse(url)
+        mCompositeDisposable.add(requestInterface.registerelse(url)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse, this::handleError));
@@ -76,34 +124,25 @@ int postion = 1;
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mcompositeDisposable.clear();
+        mCompositeDisposable.clear();
     }
 
     private void handleResponse(ArrayList<Example2> example) {
         Log.d("request", example.toString());
 
-        if (example.get(postion).getDataList().get(0).getProducts()==null){
-            postion =2;
+        if (example.get(postion).getDataList().get(0).getProducts() == null) {
+            postion = 2;
         }
-        ArrayList<Product>  products =(ArrayList<Product>) example.get(postion).getDataList().get(0).getProducts();
+        ArrayList<Product> products = (ArrayList<Product>) example.get(postion).getDataList().get(0).getProducts();
 
         Log.d("productsize", String.valueOf(example.get(postion).getDataList().get(0).getProducts().size()));
         Log.d("products", products.toString());
 
-        ProductAdapter productAdapter = new ProductAdapter(products,this);
+        ProductAdapter productAdapter = new ProductAdapter(products, this, facebookId);
         recyclerView.setAdapter(productAdapter);
 
 
-//    ArrayList<Product>  products =(ArrayList<Product>) example.get(i).getDataList().get(0).getProducts();
-//   // ArrayList<Variant> variants = (ArrayList<Variant>) products.get(0).getVariants();
-//    Log.d("products", products.toString());
-//
-//    ProductAdapter productAdapter = new ProductAdapter(products,this);
-//    recyclerView.setAdapter(productAdapter);
-}
-
-
-
+    }
 
 
     public void setCardList() {
@@ -111,5 +150,41 @@ int postion = 1;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.cartmenu, menu);
+
+        if (!Objects.equals(cartCount, null)) {
+            MenuItem item = menu.findItem(R.id.action_cart);
+            MenuItemCompat.setActionView(item, R.layout.actionbar_badge_layout);
+            RelativeLayout notifCount = (RelativeLayout) item.getActionView();
+            setCount(notifCount);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void setCount(RelativeLayout notifCount) {
+        TextView tv = notifCount.findViewById(R.id.actionbar_notifcation_textview);
+        notifCount.setVisibility(View.INVISIBLE);
+        if (!Objects.equals(cartCount, "0")) {
+            tv.setVisibility(View.VISIBLE);
+            tv.setText(cartCount);
+
+        }
+
+    }
+
+    private void setupToolBar(Toolbar toolbar) {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitle("");
+        toolbar.setSubtitle("");
+
+    }
+
+
+
 
 }

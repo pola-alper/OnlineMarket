@@ -1,12 +1,12 @@
-
 package com.alper.pola.andoid.onlinemarket.Model.Model1;
 
 import java.io.Serializable;
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Category implements Serializable{
+public class Category implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -25,7 +25,7 @@ public class Category implements Serializable{
     private String productsCount;
     @SerializedName("sub_categories")
     @Expose
-    private List<SubCategory> subCategories ;
+    private List<SubCategory> subCategories;
 
     public String getId() {
         return id;

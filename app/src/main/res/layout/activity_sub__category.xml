@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="com.alper.pola.andoid.onlinemarket.Activity.MainActivity">
 
-    tools:context="com.alper.pola.andoid.onlinemarket.Activity.Sub_Category">
-    <android.support.v7.widget.RecyclerView
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+
+
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/recyclerview"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary">
 
-        />
-</android.support.constraint.ConstraintLayout>
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/profile_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@color/colorPrimary"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FF000000"/>
+
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

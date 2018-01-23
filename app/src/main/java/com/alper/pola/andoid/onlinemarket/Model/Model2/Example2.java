@@ -1,4 +1,3 @@
-
 package com.alper.pola.andoid.onlinemarket.Model.Model2;
 
 import com.google.gson.JsonDeserializationContext;
@@ -18,14 +17,14 @@ public class Example2 implements Serializable {
     @Expose
     private Data data;
     private List<Data> dataList;
+    @SerializedName("name")
+    @Expose
+    private String name;
 
     public Example2(Data... ms) {
         dataList = Arrays.asList(ms);
     }
 
-    @SerializedName("name")
-    @Expose
-    private String name;
     public List<Data> getDataList() {
         return dataList;
     }
@@ -49,6 +48,16 @@ public class Example2 implements Serializable {
     public void setData(Data data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "Example2{" +
+                "data=" + data +
+                ", dataList=" + dataList +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
     public static class LocationsDeserializer implements JsonDeserializer<Example2> {
 
         @Override
@@ -63,14 +72,5 @@ public class Example2 implements Serializable {
                 throw new JsonParseException("Unsupported type of monument element");
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Example2{" +
-                "data=" + data +
-                ", dataList=" + dataList +
-                ", name='" + name + '\'' +
-                '}';
     }
 }

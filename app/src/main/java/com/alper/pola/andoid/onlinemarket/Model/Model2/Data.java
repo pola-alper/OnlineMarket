@@ -1,7 +1,7 @@
-
 package com.alper.pola.andoid.onlinemarket.Model.Model2;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -12,7 +12,7 @@ public class Data {
     private String title;
     @SerializedName("products")
     @Expose
-    private List<Product> products ;
+    private List<Product> products;
 
     public String getTitle() {
         return title;

@@ -1,4 +1,3 @@
-
 package com.alper.pola.andoid.onlinemarket.Model.Model2;
 
 import com.google.gson.annotations.Expose;

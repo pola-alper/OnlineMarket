@@ -1,8 +1,8 @@
-
 package com.alper.pola.andoid.onlinemarket.Model.Model1;
 
 import java.io.Serializable;
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -26,7 +26,6 @@ public class SubCategory_ implements Serializable {
     @SerializedName("image_url")
     @Expose
     private String imageUrl;
-
 
 
     public String getId() {
@@ -76,7 +75,6 @@ public class SubCategory_ implements Serializable {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-
 
 
 }
